@@ -75,7 +75,7 @@ class _LoadingListPageState extends State<LoadingListPage> {
           baseColor: Colors.grey.shade300,
           highlightColor: Colors.grey.shade100,
           enabled: true,
-          child: const SingleChildScrollView(
+          child: SingleChildScrollView(
             physics: NeverScrollableScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
