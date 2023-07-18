@@ -74,8 +74,10 @@ class _LoadingListPageState extends State<LoadingListPage> {
       body: Shimmer.fromColors(
           baseColor: Colors.grey.shade300,
           highlightColor: Colors.grey.shade100,
+          delay: const Duration(milliseconds: 4000),
+          period: const Duration(seconds: 3),
           enabled: true,
-          child: SingleChildScrollView(
+          child: const SingleChildScrollView(
             physics: NeverScrollableScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
