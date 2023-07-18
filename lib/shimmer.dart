@@ -4,6 +4,8 @@
 
 library shimmer;
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -60,6 +62,7 @@ class Shimmer extends StatefulWidget {
   final Gradient gradient;
   final int loop;
   final bool enabled;
+  final Duration delay;
 
   const Shimmer({
     super.key,
@@ -68,6 +71,7 @@ class Shimmer extends StatefulWidget {
     this.direction = ShimmerDirection.ltr,
     this.period = const Duration(milliseconds: 1500),
     this.loop = 0,
+    this.delay = Duration.zero,
     this.enabled = true,
   });
 
@@ -83,6 +87,7 @@ class Shimmer extends StatefulWidget {
     required Color highlightColor,
     this.period = const Duration(milliseconds: 1500),
     this.direction = ShimmerDirection.ltr,
+    this.delay = Duration.zero,
     this.loop = 0,
     this.enabled = true,
   }) : gradient = LinearGradient(
@@ -115,6 +120,8 @@ class Shimmer extends StatefulWidget {
     properties.add(
         DiagnosticsProperty<Duration>('period', period, defaultValue: null));
     properties
+        .add(DiagnosticsProperty<Duration>('delay', delay, defaultValue: null));
+    properties
         .add(DiagnosticsProperty<bool>('enabled', enabled, defaultValue: null));
     properties.add(DiagnosticsProperty<int>('loop', loop, defaultValue: 0));
   }
@@ -123,20 +130,25 @@ class Shimmer extends StatefulWidget {
 class _ShimmerState extends State<Shimmer> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   int _count = 0;
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: widget.period)
-      ..addStatusListener((AnimationStatus status) {
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: widget.period,
+    )..addStatusListener((AnimationStatus status) {
         if (status != AnimationStatus.completed) {
           return;
         }
         _count++;
-        if (widget.loop <= 0) {
-          _controller.repeat();
-        } else if (_count < widget.loop) {
-          _controller.forward(from: 0.0);
+        if (widget.loop <= 0 || _count < widget.loop) {
+          _timer = Timer(
+            widget.delay,
+            () => _controller.forward(from: 0.0),
+          );
         }
       });
     if (widget.enabled) {
@@ -171,6 +183,7 @@ class _ShimmerState extends State<Shimmer> with SingleTickerProviderStateMixin {
   @override
   void dispose() {
     _controller.dispose();
+    _timer?.cancel();
     super.dispose();
   }
 }
