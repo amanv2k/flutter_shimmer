@@ -91,22 +91,17 @@ class Shimmer extends StatefulWidget {
     this.loop = 0,
     this.enabled = true,
   }) : gradient = LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.centerRight,
-            colors: <Color>[
-              baseColor,
-              baseColor,
-              highlightColor,
-              baseColor,
-              baseColor
-            ],
-            stops: const <double>[
-              0.0,
-              0.35,
-              0.5,
-              0.65,
-              1.0
-            ]);
+          begin: Alignment.topCenter,
+          end: Alignment.centerRight,
+          colors: <Color>[
+            baseColor,
+            baseColor,
+            highlightColor,
+            baseColor,
+            baseColor
+          ],
+          // stops: const <double>[0.0, 0.35, 0.5, 0.65, 1.0],
+        );
 
   @override
   _ShimmerState createState() => _ShimmerState();
@@ -131,6 +126,7 @@ class _ShimmerState extends State<Shimmer> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   int _count = 0;
   Timer? _timer;
+  var scaleAnimation;
 
   @override
   void initState() {
@@ -140,6 +136,7 @@ class _ShimmerState extends State<Shimmer> with SingleTickerProviderStateMixin {
       vsync: this,
       duration: widget.period,
     )..addStatusListener((AnimationStatus status) {
+        setState(() {});
         if (status != AnimationStatus.completed) {
           return;
         }
@@ -151,6 +148,10 @@ class _ShimmerState extends State<Shimmer> with SingleTickerProviderStateMixin {
           );
         }
       });
+    // scaleAnimation = Tween(
+    //   begin: 0,
+    //   end: 1.0,
+    // ).animate(CurvedAnimation(parent: _controller, curve: Curves.bounceInOut));
     if (widget.enabled) {
       _controller.forward();
     }
@@ -261,9 +262,9 @@ class _ShimmerFilter extends RenderProxyBox {
       Rect rect;
       double dx, dy;
       if (_direction == ShimmerDirection.rtl) {
-        dx = _offset(width, -width, _percent);
+        dx = _offset(2 * width, -width, _percent);
         dy = 0.0;
-        rect = Rect.fromLTWH(dx - width, dy, 3 * width, height);
+        rect = Rect.fromLTWH(dx - width, dy, width, height);
       } else if (_direction == ShimmerDirection.ttb) {
         dx = 0.0;
         dy = _offset(-height, height, _percent);
