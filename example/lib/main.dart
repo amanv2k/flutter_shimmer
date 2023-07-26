@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(),
+      home: const LoadingListPage(),
     );
   }
 }
@@ -67,43 +67,81 @@ class LoadingListPage extends StatefulWidget {
 class _LoadingListPageState extends State<LoadingListPage> {
   @override
   Widget build(BuildContext context) {
+    const double deg = 130;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Loading List'),
       ),
-      body: Shimmer.fromColors(
-          baseColor: Colors.grey.shade300,
-          highlightColor: Colors.grey.shade100,
-          delay: const Duration(milliseconds: 4000),
-          period: const Duration(seconds: 3),
-          enabled: true,
-          child: const SingleChildScrollView(
-            physics: NeverScrollableScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                BannerPlaceholder(),
-                TitlePlaceholder(width: double.infinity),
-                SizedBox(height: 16.0),
-                ContentPlaceholder(
-                  lineType: ContentLineType.threeLines,
-                ),
-                SizedBox(height: 16.0),
-                TitlePlaceholder(width: 200.0),
-                SizedBox(height: 16.0),
-                ContentPlaceholder(
-                  lineType: ContentLineType.twoLines,
-                ),
-                SizedBox(height: 16.0),
-                TitlePlaceholder(width: 200.0),
-                SizedBox(height: 16.0),
-                ContentPlaceholder(
-                  lineType: ContentLineType.twoLines,
-                ),
-              ],
+      body: Column(
+        children: [
+          Shimmer.fromColors(
+            baseColor: Colors.grey.shade300,
+            highlightColor: Colors.grey.shade100,
+            // delay: const Duration(milliseconds: 500),
+            period: const Duration(seconds: 1),
+            angle: deg,
+            enabled: true,
+            child: SingleChildScrollView(
+              physics: const NeverScrollableScrollPhysics(),
+              child: Column(
+                children: [
+                  const BannerPlaceholder(),
+                  TitlePlaceholder(width: MediaQuery.of(context).size.width),
+                ],
+              ),
             ),
-          )),
+          ),
+          const Padding(padding: EdgeInsets.all(10)),
+          const Divider(
+            color: Colors.black,
+            thickness: 4,
+          ),
+          const Padding(padding: EdgeInsets.all(10)),
+          Shimmer.fromColors(
+            baseColor: Colors.grey.shade300,
+            highlightColor: Colors.grey.shade100,
+            // delay: const Duration(milliseconds: 500),
+            period: const Duration(seconds: 1),
+            angle: deg,
+            enabled: true,
+            child: SingleChildScrollView(
+              physics: const NeverScrollableScrollPhysics(),
+              child: Column(
+                children: [
+                  const BannerPlaceholder(),
+                  TitlePlaceholder(width: MediaQuery.of(context).size.width),
+                ],
+              ),
+            ),
+          ),
+          const Padding(padding: EdgeInsets.all(10)),
+          const Divider(
+            color: Colors.black,
+            thickness: 4,
+          ),
+          const Padding(padding: EdgeInsets.all(10)),
+          Shimmer.fromColors(
+            baseColor: Colors.grey.shade300,
+            highlightColor: Colors.grey.shade100,
+            // delay: const Duration(milliseconds: 500),
+            period: const Duration(seconds: 1),
+            angle: deg,
+            enabled: true,
+            child: SingleChildScrollView(
+              physics: const NeverScrollableScrollPhysics(),
+              child:
+                  // Text("Hello Shimmers"),
+                  Column(
+                children: [
+                  TitlePlaceholder(width: MediaQuery.of(context).size.width),
+                  // TitlePlaceholder(width: MediaQuery.of(context).size.width),
+                  // TitlePlaceholder(width: MediaQuery.of(context).size.width),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
