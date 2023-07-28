@@ -67,80 +67,81 @@ class LoadingListPage extends StatefulWidget {
 class _LoadingListPageState extends State<LoadingListPage> {
   @override
   Widget build(BuildContext context) {
-    const double deg = 130;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Loading List'),
       ),
-      body: Column(
-        children: [
-          Shimmer.fromColors(
-            baseColor: Colors.grey.shade300,
-            highlightColor: Colors.grey.shade100,
-            // delay: const Duration(milliseconds: 500),
-            period: const Duration(seconds: 1),
-            angle: deg,
-            enabled: true,
-            child: SingleChildScrollView(
-              physics: const NeverScrollableScrollPhysics(),
-              child: Column(
-                children: [
-                  const BannerPlaceholder(),
-                  TitlePlaceholder(width: MediaQuery.of(context).size.width),
-                ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+            Shimmer.fromColors(
+              baseColor: Colors.grey.shade300,
+              highlightColor: Colors.grey.shade100,
+              // delay: const Duration(milliseconds: 500),
+              period: const Duration(seconds: 1),
+              direction: ShimmerDirection.btt,
+              enabled: true,
+              child: SingleChildScrollView(
+                physics: const NeverScrollableScrollPhysics(),
+                child: Column(
+                  children: [
+                    const BannerPlaceholder(),
+                    TitlePlaceholder(width: MediaQuery.of(context).size.width),
+                  ],
+                ),
               ),
             ),
-          ),
-          const Padding(padding: EdgeInsets.all(10)),
-          const Divider(
-            color: Colors.black,
-            thickness: 4,
-          ),
-          const Padding(padding: EdgeInsets.all(10)),
-          Shimmer.fromColors(
-            baseColor: Colors.grey.shade300,
-            highlightColor: Colors.grey.shade100,
-            // delay: const Duration(milliseconds: 500),
-            period: const Duration(seconds: 1),
-            angle: deg,
-            enabled: true,
-            child: SingleChildScrollView(
-              physics: const NeverScrollableScrollPhysics(),
-              child: Column(
-                children: [
-                  const BannerPlaceholder(),
-                  TitlePlaceholder(width: MediaQuery.of(context).size.width),
-                ],
+            const Divider(
+              color: Colors.black,
+              thickness: 4,
+            ),
+            const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+            Shimmer.fromColors(
+              baseColor: Colors.grey.shade300,
+              highlightColor: Colors.grey.shade100,
+              // delay: const Duration(milliseconds: 500),
+              period: const Duration(seconds: 1),
+              direction: ShimmerDirection.rtl, enabled: true,
+              child: const SingleChildScrollView(
+                physics: NeverScrollableScrollPhysics(),
+                child: BannerPlaceholder(),
               ),
             ),
-          ),
-          const Padding(padding: EdgeInsets.all(10)),
-          const Divider(
-            color: Colors.black,
-            thickness: 4,
-          ),
-          const Padding(padding: EdgeInsets.all(10)),
-          Shimmer.fromColors(
-            baseColor: Colors.grey.shade300,
-            highlightColor: Colors.grey.shade100,
-            // delay: const Duration(milliseconds: 500),
-            period: const Duration(seconds: 1),
-            angle: deg,
-            enabled: true,
-            child: SingleChildScrollView(
-              physics: const NeverScrollableScrollPhysics(),
-              child:
-                  // Text("Hello Shimmers"),
-                  Column(
-                children: [
-                  TitlePlaceholder(width: MediaQuery.of(context).size.width),
-                  // TitlePlaceholder(width: MediaQuery.of(context).size.width),
-                  // TitlePlaceholder(width: MediaQuery.of(context).size.width),
-                ],
+            const Divider(
+              color: Colors.black,
+              thickness: 4,
+            ),
+            const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+            Shimmer.fromColors(
+              baseColor: Colors.grey.shade300,
+              highlightColor: Colors.grey.shade100,
+              // delay: const Duration(milliseconds: 500),
+              period: const Duration(seconds: 1),
+              direction: ShimmerDirection.slanted, enabled: true,
+              reversed: false,
+              child: const BannerPlaceholder(),
+            ),
+            const Divider(
+              color: Colors.black,
+              thickness: 4,
+            ),
+            const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+            Shimmer.fromColors(
+              baseColor: Colors.grey.shade300,
+              highlightColor: Colors.grey.shade100,
+              // delay: const Duration(milliseconds: 500),
+              period: const Duration(seconds: 1),
+              direction: ShimmerDirection.slanted, enabled: true,
+              reversed: true,
+              child: SingleChildScrollView(
+                physics: const NeverScrollableScrollPhysics(),
+                child:
+                    TitlePlaceholder(width: MediaQuery.of(context).size.width),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

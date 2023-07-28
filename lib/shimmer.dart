@@ -17,6 +17,7 @@ import 'package:flutter/rendering.dart';
 /// * [ShimmerDirection.rtl] right to left direction
 /// * [ShimmerDirection.ttb] top to bottom direction
 /// * [ShimmerDirection.btt] bottom to top direction
+/// * [ShimmerDirection.slanted] slanted 30 degrees in clockwise direction
 ///
 
 ///
@@ -54,25 +55,38 @@ import 'package:flutter/rendering.dart';
 ///
 /// * use one [Shimmer] to wrap list of [Widget]s instead of a list of many [Shimmer]s
 ///
+
+enum ShimmerDirection {
+  ltr(0),
+  ttb(90),
+  rtl(180),
+  btt(270),
+  slanted(30);
+
+  final double val;
+  const ShimmerDirection(this.val);
+}
+
 @immutable
 class Shimmer extends StatefulWidget {
   final Widget child;
   final Duration period;
-  // final ShimmerDirection direction;
-  final double angle;
+  final ShimmerDirection direction;
   final Gradient gradient;
   final int loop;
   final bool enabled;
+  final bool reversed;
   final Duration delay;
 
   const Shimmer({
     super.key,
     required this.child,
     required this.gradient,
-    this.angle = 0,
+    this.direction = ShimmerDirection.ltr,
     this.period = const Duration(milliseconds: 1500),
     this.loop = 0,
     this.delay = Duration.zero,
+    this.reversed = false,
     this.enabled = true,
   });
 
@@ -84,27 +98,6 @@ class Shimmer extends StatefulWidget {
   static double degToRadian(double angle) {
     return (pi * angle / 180) % (2 * pi);
   }
-  // static AlignmentGeometry getDirection(ShimmerDirection direction,
-  //     {bool isBegin = true}) {
-  //   switch (direction) {
-  //     case ShimmerDirection.bmtm:
-  //       return isBegin ? Alignment.bottomCenter : Alignment.topCenter;
-  //     case ShimmerDirection.tmbm:
-  //       return isBegin ? Alignment.topCenter : Alignment.bottomCenter;
-  //     case ShimmerDirection.rblt:
-  //       return isBegin ? Alignment.bottomRight : Alignment.topLeft;
-  //     case ShimmerDirection.ltrb:
-  //       return isBegin ? Alignment.topLeft : Alignment.bottomRight;
-  //     case ShimmerDirection.lbrt:
-  //       return isBegin ? Alignment.bottomLeft : Alignment.topRight;
-  //     case ShimmerDirection.rtlb:
-  //       return isBegin ? Alignment.topRight : Alignment.bottomLeft;
-  //     case ShimmerDirection.rmlm:
-  //       return isBegin ? Alignment.centerRight : Alignment.centerLeft;
-  //     default:
-  //       return isBegin ? Alignment.centerLeft : Alignment.centerRight;
-  //   }
-  // }
 
   Shimmer.fromColors({
     super.key,
@@ -112,21 +105,20 @@ class Shimmer extends StatefulWidget {
     required Color baseColor,
     required Color highlightColor,
     this.period = const Duration(milliseconds: 1500),
-    this.angle = 0,
+    this.direction = ShimmerDirection.ltr,
     this.delay = Duration.zero,
     this.loop = 0,
+    this.reversed = false,
     this.enabled = true,
   }) : gradient = LinearGradient(
-            begin: (degToRadian(angle) >= 0 && degToRadian(angle) < pi)
-                ? Alignment.centerLeft
-                : Alignment.centerRight,
-            end: (degToRadian(angle) >= 0 && degToRadian(angle) < pi)
+            begin: (degToRadian(direction.val + (reversed ? 180 : 0)) >= 0 &&
+                    degToRadian(direction.val + (reversed ? 180 : 0)) < pi)
                 ? Alignment.centerRight
                 : Alignment.centerLeft,
-            // begin: Alignment.bottomLeft,
-            // end: Alignment.bottomRight,
-
-            // end: getDirection(direction, isBegin: false),
+            end: (degToRadian(direction.val + (reversed ? 180 : 0)) >= 0 &&
+                    degToRadian(direction.val + (reversed ? 180 : 0)) < pi)
+                ? Alignment.centerLeft
+                : Alignment.centerRight,
             colors: <Color>[
               baseColor,
               baseColor,
@@ -134,8 +126,9 @@ class Shimmer extends StatefulWidget {
               baseColor,
               baseColor
             ],
-            stops: const <double>[0.0, 0.35, 0.5, 0.65, 1.0],
-            transform: GradientRotation(degToRadian(angle)));
+            stops: const <double>[0.0, 0.15, 0.5, 0.85, 1.0],
+            transform: GradientRotation(
+                degToRadian(direction.val + (reversed ? 180 : 0))));
 
   @override
   _ShimmerState createState() => _ShimmerState();
@@ -145,8 +138,8 @@ class Shimmer extends StatefulWidget {
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty<Gradient>('gradient', gradient,
         defaultValue: null));
-    properties
-        .add(DiagnosticsProperty<double>('angle', angle, defaultValue: 0));
+    properties.add(
+        DiagnosticsProperty<bool>('reversed', reversed, defaultValue: false));
     properties.add(
         DiagnosticsProperty<Duration>('period', period, defaultValue: null));
     properties
@@ -206,7 +199,9 @@ class _ShimmerState extends State<Shimmer> with SingleTickerProviderStateMixin {
         child: child,
         gradient: widget.gradient,
         percent: _controller.value,
-        radians: (pi * widget.angle / 180) % (2 * pi),
+        radians:
+            (pi * (widget.direction.val + (widget.reversed ? 180 : 0)) / 180) %
+                (2 * pi),
       ),
     );
   }
@@ -294,29 +289,19 @@ class _ShimmerFilter extends RenderProxyBox {
       if (_radians == 0 || _radians == pi) {
         dx = _offset(-width - width * tan(_radians),
             width + width * tan(_radians), _percent, _radians);
-        // dx = 0.0;
-        // dy = 0.0;
         dy = _offset((-height - height * (tan(_radians))) - 10,
             (height + height * (tan(_radians))) + 10, _percent, _radians);
-
         rect = Rect.fromLTWH(dx, dy, width, height);
       } else if (_radians == pi / 2 || _radians == 1.5 * pi) {
         dx = _offset((-width - width / tan(_radians)) - 10,
             (width + width / tan(_radians)) + 10, _percent, _radians);
-        // dx = 0;
-        // dy = 0;
         dy = _offset((-height - height / tan(_radians)) - 10,
             (height + height / tan(_radians)) + 10, _percent, _radians);
-
         rect = Rect.fromLTWH(dx, dy, width, height);
       } else {
         dy = _offset((-width - width / tan(_radians)) - 10,
             (width + width / tan(_radians)) + 10, _percent, _radians);
         dx = 0;
-        // dy = 0;
-        // dy = _offset((-height - height / tan(_radians)) - 10,
-        //     (height + height / tan(_radians)) + 10, _percent, _radians);
-
         rect = Rect.fromLTWH(dx, dy, width, height);
       }
       layer ??= ShaderMaskLayer();
@@ -332,6 +317,6 @@ class _ShimmerFilter extends RenderProxyBox {
 
   double _offset(double start, double end, double percent, double radians) {
     return (start + (end - start) * percent) *
-        (((radians >= 0 && radians < pi) || (radians > 1.5 * pi)) ? 1 : -1);
+        ((radians >= 0 && radians < pi) ? 1 : -1);
   }
 }
